@@ -319,7 +319,7 @@ public class ModificarTelefono extends javax.swing.JFrame {
             
             try{
                 LogicaTelefono logTel = new LogicaTelefono();
-                logTel.validarTelefono(idT, tel, com, pre, pais, tipo, idC);
+                logTel.actualizarTelefono(idT, tel, com, pre, pais, tipo);
                 JOptionPane.showMessageDialog(null,"Datos actualizados correctamente");
             }catch(IOException ex){
                 JOptionPane.showMessageDialog(null,"Error en la actualizacion");

@@ -307,7 +307,7 @@ public class EliminarTelefono extends javax.swing.JFrame {
         if(opc!=-1){
             long idT = Long.parseLong(usuarios.getValueAt(opc,2).toString());
             String [] btn  ={"Cancelar","Confirmar"};
-             int sele = JOptionPane.showOptionDialog(this, "¿Deseas eliminar a este contacto?", "Confirmacion", 0, 0, null, btn, this);
+             int sele = JOptionPane.showOptionDialog(this, "¿Deseas eliminar a este teléfono?", "Confirmacion", 0, 0, null, btn, this);
              if(sele==JOptionPane.NO_OPTION){
                  try{
                      LogicaTelefono logTel = new LogicaTelefono();
@@ -316,6 +316,8 @@ public class EliminarTelefono extends javax.swing.JFrame {
                      modelo.setRowCount(0); 
                     JOptionPane.showMessageDialog(null,"Se ha eliminado correctamente");
                  } catch (IOException ex) {
+                    Logger.getLogger(EliminarTelefono.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
                     Logger.getLogger(EliminarTelefono.class.getName()).log(Level.SEVERE, null, ex);
                 }
              }else{
