@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.sql.Statement;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 
 /**
@@ -345,33 +346,59 @@ public class LogicaContacto{
         
     }
     
-    private void crearEnlaces(){
-        Repositorio<Telefono> t = RepositorioTelefono.getRepositorio();
-        List<Telefono> listT = new ArrayList<>();
-        List<Telefono> listB;
-        listT = t.getList();
+    //Funciones para la creación de gráficas
+   
+    public DefaultCategoryDataset getDatos() throws Exception{
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+        Conexion cone = new Conexion();
+        cone.JavaToMySQL();
+        int i=1,cant=0;
+        String nom="";
         
-        for(Contacto p:list){
-            listB = new ArrayList<>();
-            for(Telefono q:listT){
-                if(p.getId()==q.getIdC()){
-                   listB.add(q);
-                }
+        String Query = "select * from contacto";
+        
+        cone.comando = cone.conexion.createStatement();
+        ResultSet rs = cone.comando.executeQuery(Query);
+        
+        
+        while (rs.next()) {
+            
+            String Query2 = "select count(*) as total,nombre from telefono inner join contacto on telefono.idcontacto=contacto.idcontacto where telefono.idcontacto = ?";
+            
+            PreparedStatement actualizar = cone.conexion.prepareStatement(Query2);
+            actualizar.setString(1, rs.getString("idcontacto"));
+            
+            ResultSet rs2 = actualizar.executeQuery();
+            
+            if(rs2.next()){
+                cant = rs2.getInt("total");
+                nom = rs.getString("nombre");
             }
-            p.setTelefonos(listB);
+            
+            datos.setValue(cant, "Persona "+i,nom);
+            i++;
         }
-    }    
-    
-    private void visualizar(){       
-        for(Contacto p:list){
-            System.out.println(p.toString());
-            if(p.getTelefonos()!=null){
-                for(Telefono q:p.getTelefonos()){
-                    System.out.println(q.getNum());
-                } 
-            }
-        }
-        System.out.println("\n");
+        
+        return datos;
     }
+    
+    public int cantidadR() throws Exception{
+        Conexion cone = new Conexion();
+        cone.JavaToMySQL();
+        int cant =0;
+        
+        String Query = "select * count(*) from contacto";
+        
+        cone.comando = cone.conexion.createStatement();
+        ResultSet rs = cone.comando.executeQuery(Query);
+        if (rs.next()) {
+            cant = rs.getInt(1); // Obtener el primer resultado de la consulta
+            if (rs.wasNull()) {
+                cant = 0; // Si el valor era null, asignar 0
+            }
+        }
+        
+        return cant;
+    } 
     
 }
