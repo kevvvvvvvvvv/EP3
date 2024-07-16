@@ -61,19 +61,41 @@ public class LogicaContacto{
         Conexion cone = new Conexion();
         cone.JavaToMySQL();
         
-        String Query = "insert into contacto values(?,?,?,?,?,?,?)";
+        if(id ==0){ 
+            String Query = "insert into contacto values(?,?,?,?,?,?,?)";
+
+            PreparedStatement insertar = cone.conexion.prepareStatement(Query);
+
+            insertar.setString(1,String.valueOf(generarId()));
+            insertar.setString(2,n);
+            insertar.setString(3,ap);
+            insertar.setString(4,am);
+            insertar.setString(5,pais);
+            insertar.setString(6,estado);
+            insertar.setString(7,edad);
+            insertar.executeUpdate();
+        }else{
+            actualizarDatos(id,n,ap,am,pais,estado,edad);
+        }
         
-        PreparedStatement insertar = cone.conexion.prepareStatement(Query);
+    }
+    
+    private void actualizarDatos(int id, String n, String ap, String am, String pais, String estado, String edad) throws SQLException, Exception{
+        Conexion cone = new Conexion();
+        cone.JavaToMySQL();
         
-        insertar.setString(1,String.valueOf(generarId()));
-        insertar.setString(2,n);
-        insertar.setString(3,ap);
-        insertar.setString(4,am);
-        insertar.setString(5,estado);
-        insertar.setString(6,pais);
-        insertar.setString(7,edad);
-        insertar.executeUpdate();
+        String Query = "update contacto set nombre = ?, apellidoP = ?, apellidoM = ?, pais = ?, estado = ?,edad=? where idcontacto = ?";
         
+        PreparedStatement actualizar = cone.conexion.prepareStatement(Query);
+        
+        actualizar.setString(1,n);
+        actualizar.setString(2,ap);
+        actualizar.setString(3,am);
+        actualizar.setString(4,pais);
+        actualizar.setString(5,estado);
+        actualizar.setString(6,edad);
+        actualizar.setString(7,String.valueOf(id));
+        actualizar.executeUpdate();
     }
     
     private int generarId() throws SQLException, Exception{
@@ -162,22 +184,64 @@ public class LogicaContacto{
     }
     
     public List<Contacto> buscarTelefono(String tele) throws Exception{
-        List<Contacto> con = new ArrayList<>();
-        boolean flag;
+        List<Contacto> cont = new ArrayList<>();
+        List<Telefono> tel = new ArrayList<>();
+        Conexion con = new Conexion();
+        Contacto c = new Contacto();
+        Telefono t;
         
-        for(Contacto p:list){
-            flag = true;
-            if(p.getTelefonos()!=null){
+        con.JavaToMySQL();
+       
+        String Query = "select * from contacto inner join telefono on contacto.idcontacto = telefono.idcontacto where numero = "+tele;
+
+        
+        con.comando = con.conexion.createStatement();
+        ResultSet rs = con.comando.executeQuery(Query);
+        if(rs.next()){
+            c = new Contacto(
+                rs.getLong("idcontacto"),
+                rs.getString("nombre"),
+                rs.getString("apellidoP"),
+                rs.getString("apellidoM"),
+                rs.getString("estado"),
+                rs.getString("pais"),
+                rs.getInt("edad")
+            );
+        }
+        
+        c.setTelefonos(anadirTelefonos(c.getId()));
+        cont.add(c);
+
+        return cont;
+    }
+    
+    private List<Telefono> anadirTelefonos(long id) throws Exception{
+        List<Telefono> tel = new ArrayList<>();
+        Telefono t = new Telefono();
+        Conexion con = new Conexion();
+        con.JavaToMySQL();
+        
+        String Query2 = "select * from telefono where telefono.idcontacto = ?";
+        PreparedStatement ps2 = con.conexion.prepareStatement(Query2);
+        ps2.setLong(1, id);
+
+        ResultSet rs2 = ps2.executeQuery();
+
+        while (rs2.next()) {
+            t = new Telefono(
+                rs2.getLong("idtelefono"),
+                rs2.getString("numero"),
+                rs2.getString("compania"),
+                rs2.getString("prefijo"),
+                rs2.getString("pais"),
+                rs2.getString("tipo"),
+                rs2.getLong("idcontacto")
+            );
+            tel.add(t);
+        }
+        
+        return tel;
                 
-                for(Telefono q:p.getTelefonos()){
-                    if(q.getNum().equals(tele)&& flag){
-                        con.add(p);
-                        flag = false;
-                    }
-                }
-            }
-        } 
-        return con;
     }
     
     public List<Contacto> buscarId(long id) throws Exception{
@@ -200,6 +264,7 @@ public class LogicaContacto{
                 rs.getString("pais"),
                 rs.getInt("edad")
             );
+            c.setTelefonos(anadirTelefonos(c.getId()));
             cont.add(c);
         }
         return cont;
@@ -229,6 +294,7 @@ public class LogicaContacto{
                 rs.getString("pais"),
                 rs.getInt("edad")
             );
+            c.setTelefonos(anadirTelefonos(c.getId()));
             cont.add(c);
         }
         
@@ -259,6 +325,7 @@ public class LogicaContacto{
                 rs.getString("pais"),
                 rs.getInt("edad")
             );
+            c.setTelefonos(anadirTelefonos(c.getId()));
             cont.add(c);
         }
         

@@ -495,7 +495,7 @@ public class RegistrarContacto extends javax.swing.JFrame {
         try{
             LogicaContacto lo = new LogicaContacto();
             
-            lo.validarContacto(0,nom, ap, am,es,p,ed);
+            lo.validarContacto(0,nom, ap, am,p,es,ed);
         }catch(Exception e){
             flag = false;
             JOptionPane.showMessageDialog(null,"Datos incorrectos. Vuelva a introducir los datos");
