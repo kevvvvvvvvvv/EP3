@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**@author Usuario**/
 
@@ -230,6 +231,71 @@ public class LogicaTelefono {
         actualizar.setString(5,tipo);
         actualizar.setString(6,String.valueOf(id));
         actualizar.executeUpdate();
+    }
+    
+    
+    /*PARA LA CREACIÓN DE GRÁFICAS*/
+    
+    public DefaultCategoryDataset getDatos(int opc) throws Exception{
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+        Conexion cone = new Conexion();
+        cone.JavaToMySQL();
+        ResultSet rs;
+        
+        int i=1, total=0;
+        String Query;
+        
+        switch(opc){
+            case 0:
+                String comp="";
+        
+                Query = "select compania, count(*) as total  from telefono group by compania";
+                cone.comando = cone.conexion.createStatement();
+                rs = cone.comando.executeQuery(Query);
+
+                while(rs.next()){
+                    comp = rs.getString("compania");
+                    total = rs.getInt("total");
+
+                    datos.setValue(total, "Compañía "+i, comp);
+                    i++;
+                }
+                break;
+            
+            case 1:
+                String tipo="";
+        
+                Query = "select tipo, count(*) as total  from telefono group by tipo";
+                cone.comando = cone.conexion.createStatement();
+                rs = cone.comando.executeQuery(Query);
+
+                while(rs.next()){
+                    tipo = rs.getString("tipo");
+                    total = rs.getInt("total");
+
+                    datos.setValue(total, "Tipo "+i, tipo);
+                    i++;
+                }
+                break;
+                
+            case 2:
+                String pais="";
+                
+                Query = "select pais, count(*) as total from telefono group by pais";
+                cone.comando = cone.conexion.createStatement();
+                rs = cone.comando.executeQuery(Query);
+                
+                while(rs.next()){
+                    pais = rs.getString("pais");
+                    total = rs.getInt("total");
+
+                    datos.setValue(total, "País "+i, pais);
+                    i++;
+                }
+                break;
+        }
+        
+        return datos;         
     }
     
     
