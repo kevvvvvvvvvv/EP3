@@ -210,6 +210,10 @@ public class GraficarPorCategoria extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuConActionPerformed
 
     private void graficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graficarActionPerformed
+        panelG.removeAll();
+        panelG.revalidate();
+        panelG.repaint();
+        
         int indice = tipo.getSelectedIndex();
         
         try {
