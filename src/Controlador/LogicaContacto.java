@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import java.sql.Statement;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 
 /**
@@ -376,6 +379,40 @@ public class LogicaContacto{
             }
             
             datos.setValue(cant, "Persona "+i,nom);
+            i++;
+        }
+        
+        return datos;
+    }
+ 
+     public DefaultCategoryDataset getDatosP() throws Exception{
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+        Conexion cone = new Conexion();
+        cone.JavaToMySQL();
+        int i=1,cant=0;
+        String nom="";
+        
+        String Query = "select * from contacto";
+        
+        cone.comando = cone.conexion.createStatement();
+        ResultSet rs = cone.comando.executeQuery(Query);
+        
+        
+        while (rs.next()) {
+            
+            String Query2 = "select count(*) as total,nombre from telefono inner join contacto on telefono.idcontacto=contacto.idcontacto where telefono.idcontacto = ?";
+            
+            PreparedStatement actualizar = cone.conexion.prepareStatement(Query2);
+            actualizar.setString(1, rs.getString("idcontacto"));
+            
+            ResultSet rs2 = actualizar.executeQuery();
+            
+            if(rs2.next()){
+                cant = rs2.getInt("total");
+                nom = rs.getString("nombre");
+            }
+            
+            datos.setValue(cant, "Persona",nom);
             i++;
         }
         

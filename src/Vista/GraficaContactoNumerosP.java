@@ -13,15 +13,19 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYDataset;
 
 
 /* @author Usuario*/
-public class GraficaContactoNumeros extends javax.swing.JFrame {
+public class GraficaContactoNumerosP extends javax.swing.JFrame {
 
     /**
      * Creates new form RegistrarContacto
      */
-    public GraficaContactoNumeros() {
+    public GraficaContactoNumerosP() {
         initComponents();
     }
 
@@ -202,20 +206,33 @@ public class GraficaContactoNumeros extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuConActionPerformed
 
     private void graficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graficarActionPerformed
+        LogicaContacto lc = null;
         try {
-            LogicaContacto lc = new LogicaContacto();
-            JFreeChart grafico_valores = ChartFactory.createBarChart3D(
-                "Gráfica de barras",//Nombre del gráfico 
-                "Contactos",//Nombre de las barras (eje x)
-                "Número de teléfonos",//Nombre de los valores (eje y)
-                lc.getDatos(), //Dato del gráfico
-                PlotOrientation.VERTICAL, //Orintación
-                true,//Leyenda para los valores en barra (individuales)
-                false,//Herramientas
-                false //URL del gráfico
+            lc = new LogicaContacto();
+        } catch (IOException ex) {
+            Logger.getLogger(GraficaContactoNumerosP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        // Obtener los datos en un formato adecuado para XYDataset
+        DefaultCategoryDataset dataset = null;
+        try {
+            dataset = lc.getDatosP(); // Asume que getDatos() devuelve un XYDataset
+        } catch (Exception ex) {
+            Logger.getLogger(GraficaContactoNumerosP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        JFreeChart grafico_valores = ChartFactory.createLineChart(
+            "Gráfica de puntos",       // Nombre del gráfico 
+            "Contacto", // Nombre de las barras (eje x)
+            "Número de teléfonos",         // Nombre de los valores (eje y)
+            dataset,                    // Dato del gráfico
+            PlotOrientation.VERTICAL,   // Orientación
+            true,                       // Leyenda para los valores en barra (individuales)
+            false,                      // Herramientas
+            false                       // URL del gráfico
         );
-            
-                //Mostrando la gráfica en el panel
+        
+        //Mostrando la gráfica en el panel
         ChartPanel panel = new ChartPanel(grafico_valores);
         //Solo si tenemos las herramientas activas
         panel.setMouseWheelEnabled(true);
@@ -226,13 +243,7 @@ public class GraficaContactoNumeros extends javax.swing.JFrame {
         
         //Estos métodos gestionan los gráficos en mi interfaz. Son necesarios porque sino se indica que la interfaz va a mostrar una gráfica
         pack();
-        repaint();    
-            
-        } catch (IOException ex) {
-            Logger.getLogger(GraficaContactoNumeros.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(GraficaContactoNumeros.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        repaint();
         
     }//GEN-LAST:event_graficarActionPerformed
 
