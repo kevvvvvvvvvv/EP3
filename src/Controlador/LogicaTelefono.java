@@ -297,21 +297,5 @@ public class LogicaTelefono {
         
         return datos;         
     }
-    
-    
-    /*FUNCIÓN ANTIGUA*/
-    
-    public boolean verificarIdC(int idC) throws IOException{
-        Repositorio<Contacto> repCon = RepositorioContacto.getRepositorio();
-        LogicaContacto lc = new LogicaContacto();
-        List<Contacto> listaC = repCon.getList();
-        
-        for(Contacto c:listaC){
-            if(c.getId() == idC){
-                return true;
-            }
-        }
-        return false;
-    }
 }
 

@@ -106,7 +106,7 @@ public class GraficarPorCategoria extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(168, 242, 254));
-        jLabel1.setText("Cantidad de teléfonos por cada contacto");
+        jLabel1.setText("Gráficas para los teléfonos");
 
         jPanel4.setBackground(new java.awt.Color(65, 58, 132));
 
